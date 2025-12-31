@@ -1,0 +1,42 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+.flattened-pom.xml
+
+# IDE
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+.classpath
+.project
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Application
+uploads/
+logs/
+*.log
+
+# Database
+*.h2.db
+*.mv.db
+*.trace.db
+
+# Compiled class files
+*.class
+
+# Python bytecode
+*.pyc
+
