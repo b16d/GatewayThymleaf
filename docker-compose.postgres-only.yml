@@ -1,0 +1,26 @@
+# Version légère : juste PostgreSQL
+# Utilise ceci si tu veux développer localement contre PostgreSQL
+
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: gatewayfront-postgres
+    environment:
+      POSTGRES_DB: gatewayfront
+      POSTGRES_USER: gatewayuser
+      POSTGRES_PASSWORD: gatewaypassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gatewayuser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
+

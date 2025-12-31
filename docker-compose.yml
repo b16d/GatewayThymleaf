@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: gatewayfront-db
+    environment:
+      POSTGRES_DB: gatewayfront
+      POSTGRES_USER: gatewayuser
+      POSTGRES_PASSWORD: gatewaypassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - gatewayfront-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gatewayuser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gatewayfront-app
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_USER: gatewayuser
+      DB_PASSWORD: gatewaypassword
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/gatewayfront
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./uploads:/data/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - gatewayfront-network
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+
+networks:
+  gatewayfront-network:
+    driver: bridge
+
