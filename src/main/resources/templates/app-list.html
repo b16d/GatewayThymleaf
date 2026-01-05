@@ -369,7 +369,6 @@
                 <div th:each="app : ${apps}" class="app-card">
                     <div class="app-card-header">
                         <h3 th:text="${app.appName}">App Name</h3>
-                        <span class="app-type" th:text="${app.appType}" th:classappend="${'REMOTE' == app.appType} ? 'REMOTE' : ''">TYPE</span>
                     </div>
                     <p th:text="${app.description}">Description</p>
                     <div class="app-meta">

@@ -11,6 +11,5 @@ import java.util.Optional;
 public interface RegisteredAppRepository extends JpaRepository<RegisteredApp, Long> {
     Optional<RegisteredApp> findByAppName(String appName);
     List<RegisteredApp> findByActive(boolean active);
-    List<RegisteredApp> findByCreatedBy(String createdBy);
 }
 

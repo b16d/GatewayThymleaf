@@ -305,7 +305,6 @@
                 <div class="app-title-section">
                     <h1 th:text="${app.appName}">Application Name</h1>
                     <div class="app-badges">
-                        <span class="badge badge-type" th:text="${app.appType}" th:classappend="${'REMOTE' == app.appType} ? 'REMOTE' : ''">TYPE</span>
                         <span class="badge badge-status" th:classappend="${!app.active} ? 'inactive' : ''"
                               th:text="${app.active} ? '✓ Active' : '✗ Inactive'">
                             Status
@@ -313,10 +312,6 @@
                     </div>
                 </div>
                 <div class="app-stats">
-                    <div class="stat-item">
-                        <div class="label">Type</div>
-                        <div class="value" th:text="${app.appType}">REMOTE</div>
-                    </div>
                     <div class="stat-item">
                         <div class="label">Status</div>
                         <div class="value" th:text="${app.active} ? 'Online' : 'Offline'">Online</div>

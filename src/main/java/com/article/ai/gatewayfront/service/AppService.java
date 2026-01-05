@@ -63,16 +63,6 @@ public class AppService {
         return mapToResponse(app);
     }
 
-    /**
-     * Deactivates an app.
-     */
-    public void deactivateApp(Long id) {
-        RegisteredApp app = appRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("App not found: " + id));
-        app.setActive(false);
-        app.setUpdatedAt(LocalDateTime.now());
-        appRepository.save(app);
-    }
 
     /**
      * Deletes an app.

@@ -20,11 +20,9 @@ import org.springframework.web.servlet.view.RedirectView;
 public class ProxyController {
 
     private final RegisteredAppRepository appRepository;
-    private final RestTemplate restTemplate;
 
     public ProxyController(RegisteredAppRepository appRepository) {
         this.appRepository = appRepository;
-        this.restTemplate = new RestTemplate();
     }
 
     /**
