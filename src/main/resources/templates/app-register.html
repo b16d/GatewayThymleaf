@@ -234,9 +234,9 @@
 
             <!-- Error Message -->
             <div th:if="${error}" class="error-message" th:text="${error}">Error message</div>
-            <div th:if="${success}" class="success-message" th:text="${success}">Success message</div>
+            <div th:if="${message}" class="success-message" th:text="${message}">Success message</div>
 
-            <form method="post" action="/register" enctype="multipart/form-data">
+            <form method="post" action="/api/v1/register/form">
                 <!-- Common Fields -->
                 <div class="form-group">
                     <label for="appName" class="required">Application Name</label>

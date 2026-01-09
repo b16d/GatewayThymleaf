@@ -41,7 +41,6 @@ Un portail Spring Boot 3.x pour enregistrer et gérer des applications Thymeleaf
 
 5. **Identifiants de démo** :
    - **Admin** : username: `admin` / password: `admin123`
-   - **User** : username: `user` / password: `user123`
 
 6. **Accède à H2 Console** : http://localhost:8080/h2-console
    - JDBC URL: `jdbc:h2:mem:testdb`

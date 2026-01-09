@@ -388,7 +388,7 @@
     <script>
         function deleteApp(appId) {
             if (confirm('Are you sure you want to delete this application? This action cannot be undone.')) {
-                fetch('/api/apps/' + appId, {
+                fetch('/api/v1/app/' + appId, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'

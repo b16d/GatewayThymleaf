@@ -4,14 +4,13 @@ import com.article.ai.gatewayfront.config.AppProperties;
 import com.article.ai.gatewayfront.dto.AppRegistrationRequest;
 import com.article.ai.gatewayfront.dto.AppResponse;
 import com.article.ai.gatewayfront.service.AppService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,6 +21,7 @@ public class AppController {
     private final AppService appService;
     private final AppProperties appProperties;
 
+    @Autowired
     public AppController(AppService appService, AppProperties appProperties) {
         this.appService = appService;
         this.appProperties = appProperties;
@@ -61,46 +61,14 @@ public class AppController {
 
     /**
      * App registration page (admin only)
+     * Security: Protected by Spring Security - only ADMIN role can access /register
      */
     @GetMapping("/register")
-    public String registerPage(Authentication authentication, Model model) {
-        // Check if user is authenticated and has ADMIN role
-        if (authentication == null || !authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
-            return "redirect:/login";
-        }
+    public String registerPage(Model model) {
         model.addAttribute("registrationRequest", new AppRegistrationRequest());
         return "app-register";
     }
 
-    /**
-     * Handle app registration form submission (admin only)
-     */
-    @PostMapping("/register")
-    public String registerApp(
-            @RequestParam String appName,
-            @RequestParam String description,
-            @RequestParam String remoteBaseUrl,
-            Authentication authentication,
-            RedirectAttributes redirectAttributes) {
-
-        try {
-            // Verify user is ADMIN
-            if (authentication == null || !authentication.getAuthorities().stream()
-                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
-                redirectAttributes.addFlashAttribute("error", "Only ADMIN users can register apps");
-                return "redirect:/login";
-            }
-
-            String username = authentication.getName();
-            appService.registerRemoteApp(appName, description, remoteBaseUrl, username);
-            redirectAttributes.addFlashAttribute("message", "App registered successfully: " + appName);
-            return "redirect:/";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Registration failed: " + e.getMessage());
-            return "redirect:/register";
-        }
-    }
 
     /**
      * View app details
@@ -117,28 +85,6 @@ public class AppController {
         }
     }
 
-
-    /**
-     * REST API: Register remote app
-     */
-    @PostMapping("/api/apps/register/remote")
-    public ResponseEntity<?> registerRemoteAppApi(
-            @RequestBody AppRegistrationRequest request,
-            Authentication authentication) {
-
-        try {
-            String username = authentication.getName();
-            AppResponse response = appService.registerRemoteApp(
-                    request.getAppName(),
-                    request.getDescription(),
-                    request.getRemoteBaseUrl(),
-                    username
-            );
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: " + e.getMessage());
-        }
-    }
 
     /**
      * REST API: Get all apps
@@ -164,15 +110,10 @@ public class AppController {
 
     /**
      * REST API: Delete app (ADMIN only)
+     * Security: Protected by Spring Security - only ADMIN role can delete apps
      */
     @DeleteMapping("/api/apps/{id}")
-    public ResponseEntity<?> deleteAppApi(@PathVariable Long id, Authentication authentication) {
-        // Check if user is authenticated and has ADMIN role
-        if (authentication == null || !authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied: Only ADMIN users can delete apps");
-        }
-
+    public ResponseEntity<?> deleteAppApi(@PathVariable Long id) {
         try {
             appService.deleteApp(id);
             return ResponseEntity.ok("App deleted successfully");

@@ -1,94 +1,50 @@
 package com.article.ai.gatewayfront.service;
 
 import com.article.ai.gatewayfront.dto.AppResponse;
-import com.article.ai.gatewayfront.entity.RegisteredApp;
-import com.article.ai.gatewayfront.repository.RegisteredAppRepository;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Service
-public class AppService {
-
-    private final RegisteredAppRepository appRepository;
-
-    public AppService(RegisteredAppRepository appRepository) {
-        this.appRepository = appRepository;
-    }
-
+/**
+ * Service interface for managing registered applications.
+ */
+public interface AppService {
 
     /**
      * Registers a remote Thymeleaf app by URL.
+     *
+     * @param appName the name of the application
+     * @param description the description of the application
+     * @param remoteBaseUrl the base URL of the remote application
+     * @param username the username of the user registering the app
+     * @return AppResponse containing the registered app details
+     * @throws IllegalArgumentException if validation fails
      */
-    public AppResponse registerRemoteApp(String appName, String description, String remoteBaseUrl, String username) {
-        // Validate URL
-        if (remoteBaseUrl == null || remoteBaseUrl.trim().isEmpty()) {
-            throw new IllegalArgumentException("Remote URL cannot be empty");
-        }
-
-        if (!remoteBaseUrl.startsWith("http://") && !remoteBaseUrl.startsWith("https://")) {
-            throw new IllegalArgumentException("Remote URL must start with http:// or https://");
-        }
-
-        // Check if app name already exists
-        if (appRepository.findByAppName(appName).isPresent()) {
-            throw new IllegalArgumentException("App name already exists: " + appName);
-        }
-
-        RegisteredApp app = new RegisteredApp(appName, description, RegisteredApp.AppType.REMOTE, username);
-        app.setRemoteBaseUrl(remoteBaseUrl);
-
-        RegisteredApp saved = appRepository.save(app);
-        return mapToResponse(saved);
-    }
+    AppResponse registerRemoteApp(String appName, String description, String remoteBaseUrl, String username);
 
     /**
      * Gets all active registered apps.
+     *
+     * @return list of all active apps
      */
-    public List<AppResponse> getAllApps() {
-        return appRepository.findByActive(true).stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
-    }
+    List<AppResponse> getAllApps();
 
     /**
      * Gets a specific app by ID.
+     *
+     * @param id the ID of the app
+     * @return AppResponse containing the app details
+     * @throws IllegalArgumentException if app not found
      */
-    public AppResponse getAppById(Long id) {
-        RegisteredApp app = appRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("App not found: " + id));
-        return mapToResponse(app);
-    }
-
+    AppResponse getAppById(Long id);
 
     /**
      * Deletes an app.
+     *
+     * @param id the ID of the app to delete
+     * @throws IllegalArgumentException if app not found
+     * @throws IOException if deletion fails
      */
-    public void deleteApp(Long id) throws IOException {
-        RegisteredApp app = appRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("App not found: " + id));
-
-
-        appRepository.delete(app);
-    }
-
-    /**
-     * Maps entity to DTO response.
-     */
-    private AppResponse mapToResponse(RegisteredApp app) {
-        return new AppResponse(
-                app.getId(),
-                app.getAppName(),
-                app.getDescription(),
-                app.getAppType().toString(),
-                app.getRemoteBaseUrl(),
-                app.getCreatedAt(),
-                app.getCreatedBy(),
-                app.isActive()
-        );
-    }
+    void deleteApp(Long id) throws IOException;
 }
 

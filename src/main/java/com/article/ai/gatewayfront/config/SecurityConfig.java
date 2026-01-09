@@ -26,16 +26,10 @@ public class SecurityConfig {
         UserDetails admin = User.builder()
                 .username("admin")
                 .password(passwordEncoder.encode("admin123"))
-                .roles("ADMIN", "USER")
+                .roles("ADMIN")
                 .build();
 
-        UserDetails user = User.builder()
-                .username("user")
-                .password(passwordEncoder.encode("user123"))
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(admin, user);
+        return new InMemoryUserDetailsManager(admin);
     }
 
     @Bean
@@ -46,12 +40,19 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers("/", "/login", "/error").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/api/v1/register/remote").permitAll()
 
                         // Admin-only endpoints
                         .requestMatchers("/register").hasRole("ADMIN")
-                        .requestMatchers("/api/apps/register/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/register/form").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/apps/**").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/v1/app/**").hasRole("ADMIN")
 
-                        // User endpoints
+                        // User endpoints - new API v1
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/app").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/app/**").permitAll()
+
+                        // User endpoints - legacy
                         .requestMatchers("/api/apps").permitAll()
                         .requestMatchers("/app/**").permitAll()
                         .requestMatchers("/apps/**").permitAll()
