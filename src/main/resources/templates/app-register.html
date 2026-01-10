@@ -51,34 +51,6 @@
             padding: 2rem;
         }
 
-        .form-tabs {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .form-tab {
-            padding: 0.75rem 1.25rem;
-            border: none;
-            background: none;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #999;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s;
-            margin-bottom: -2px;
-        }
-
-        .form-tab.active {
-            color: #667eea;
-            border-bottom-color: #667eea;
-        }
-
-        .form-tab:hover {
-            color: #667eea;
-        }
 
         .form-group {
             margin-bottom: 1.5rem;
@@ -130,13 +102,6 @@
             line-height: 1.4;
         }
 
-        .form-section {
-            display: block;
-        }
-
-        .form-section.active {
-            display: block;
-        }
 
         .form-actions {
             display: flex;
@@ -225,7 +190,7 @@
         <!-- Header -->
         <div class="register-header">
             <h1>🚀 Register New Application</h1>
-            <p>Add your application to the portal by providing its URL</p>
+            <p>Add your remote application to the portal</p>
         </div>
 
         <!-- Form -->
@@ -254,30 +219,18 @@
                     <div class="help-text">📝 A brief description helps users understand what your app does</div>
                 </div>
 
-                <!-- Type Selector -->
-                <div class="form-group">
-                    <label class="required">Registration Type</label>
-                    <div class="form-tabs">
-                        <span style="padding: 0.75rem 1.25rem; font-weight: 500; color: #667eea;">
-                            🔗 Remote URL Registration
-                        </span>
-                    </div>
-                </div>
-
                 <!-- Remote URL Section -->
-                <div id="remote" class="form-section active">
-                    <div class="form-group">
-                        <label for="remoteBaseUrl" class="required">Remote Base URL</label>
-                        <input type="url" id="remoteBaseUrl" name="remoteBaseUrl" required
-                               placeholder="http://localhost:9090"/>
-                        <div class="help-text">
-                            🌐 The base URL where your application is hosted<br>
-                            ✓ Must start with http:// or https://<br>
-                            ✓ Example: http://localhost:9090 or https://my-app.example.com
-                        </div>
+                <div class="form-group">
+                    <label for="remoteBaseUrl" class="required">Remote Base URL</label>
+                    <input type="url" id="remoteBaseUrl" name="remoteBaseUrl" required
+                           placeholder="http://localhost:9090"/>
+                    <div class="help-text">
+                        🌐 The base URL where your application is hosted<br>
+                        ✓ Must start with http:// or https://<br>
+                        ✓ Example: http://localhost:9090 or https://my-app.example.com
                     </div>
-                    <input type="hidden" name="appType" id="appType" value="REMOTE"/>
                 </div>
+                <input type="hidden" name="appType" id="appType" value="REMOTE"/>
 
                 <!-- Form Actions -->
                 <div class="form-actions">

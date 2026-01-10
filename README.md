@@ -1,13 +1,11 @@
 # Thymeleaf Portal
 
-Un portail Spring Boot 3.x pour enregistrer et gérer des applications Thymeleaf. Permet de mettre en œuvre deux modes d'enregistrement : upload ZIP ou enregistrement par URL distante.
+Un portail Spring Boot 3.x pour enregistrer et gérer des applications Thymeleaf distantes par URL.
 
 ## 🚀 Caractéristiques
 
-- **Enregistrement d'applications uploadées** : Téléchargez un ZIP contenant vos templates et ressources Thymeleaf
 - **Enregistrement d'applications distantes** : Enregistrez une URL pour accéder à une application Thymeleaf hébergée
 - **Authentification Spring Security** : Rôles ADMIN (enregistrement) et USER (accès)
-- **Stockage sécurisé** : Validation ZIP, prévention de traversée de répertoires, limites de taille (10MB)
 - **API REST** : Endpoints pour gérer les applications par programmation
 - **Interface Thymeleaf** : Portail web élégant et réactif
 - **Docker Support** : Dockerfile et docker-compose fournis
@@ -74,14 +72,12 @@ src/main/java/com/article/ai/gatewayfront/
 ├── repository/
 │   └── RegisteredAppRepository.java
 ├── service/
-│   ├── AppService.java           # Logique métier
-│   └── StorageService.java       # Gestion des fichiers ZIP
+│   └── AppService.java           # Logique métier
 ├── controller/
 │   ├── AppController.java        # Contrôleur Web + API REST
 │   └── ProxyController.java      # Proxy pour apps distantes
 ├── config/
-│   ├── SecurityConfig.java       # Configuration Spring Security
-│   └── WebConfig.java            # Configuration web
+│   └── SecurityConfig.java       # Configuration Spring Security
 └── dto/
     ├── AppRegistrationRequest.java
     └── AppResponse.java
@@ -98,23 +94,13 @@ src/main/resources/
 
 src/test/java/
 ├── service/
-│   ├── AppServiceTest.java
-│   └── StorageServiceTest.java
+│   └── AppServiceTest.java
 └── controller/
     └── AppControllerIntegrationTest.java
 ```
 
 ## 🔌 API REST
 
-### Enregistrer une application uploadée
-
-```bash
-curl -X POST http://localhost:8080/api/apps/register/upload \
-  -H "Authorization: Basic YWRtaW46YWRtaW4xMjM=" \
-  -F "appName=MyApp" \
-  -F "description=My Thymeleaf App" \
-  -F "zipFile=@path/to/app.zip"
-```
 
 ### Enregistrer une application distante
 
@@ -163,7 +149,6 @@ mvn test jacoco:report
 ```
 
 Tests inclus :
-- `StorageServiceTest` : Validation et extraction ZIP
 - `AppServiceTest` : Logique métier (enregistrement, récupération, suppression)
 - `AppControllerIntegrationTest` : Endpoints web et API, authentification
 
@@ -171,8 +156,6 @@ Tests inclus :
 
 - **Authentification** : Spring Security avec utilisateurs en mémoire (dev) ou base de données (prod)
 - **Autorisation** : Rôles ADMIN/USER sur les endpoints sensibles
-- **Validation ZIP** : Prévention de traversée de répertoires (`..`), vérification des chemins
-- **Limites de taille** : 10MB par fichier, 100KB par entrée ZIP
 - **Sanitisation** : Headers et URLs validées
 
 ## 🐳 Déploiement Docker
@@ -192,24 +175,18 @@ docker run -p 8080:8080 \
   gateway-front:latest
 ```
 
-### Structure des uploads
-
-Les fichiers uploadés sont stockés dans `/data/uploads/app-{id}/`
-
 ## 📝 Fichiers de Configuration
 
 ### `application.properties` (Dev)
 ```properties
 spring.jpa.hibernate.ddl-auto=create-drop
 spring.datasource.url=jdbc:h2:mem:testdb
-app.upload.dir=uploads
 ```
 
 ### `application-prod.properties` (Production)
 ```properties
 spring.jpa.hibernate.ddl-auto=validate
 spring.datasource.url=jdbc:postgresql://postgres:5432/gatewayfront
-app.upload.dir=/data/uploads
 ```
 
 ## 🚢 CI/CD avec GitHub Actions
@@ -230,7 +207,6 @@ Secrets requis pour Docker Hub :
 - **Spring Data JPA**
 - **Spring Security**
 - **Thymeleaf**
-- **Apache Commons Compress** (ZIP handling)
 - **H2 Database** (dev)
 - **PostgreSQL Driver** (prod)
 - **JUnit 5 + Mockito** (testing)
@@ -255,15 +231,9 @@ Secrets requis pour Docker Hub :
    - Cliquez "View" pour voir les détails
    - Cliquez "Access Remote App" pour accéder à l'app externe
 
-4. **Enregistrement d'une app uploadée** :
-   - Créez un ZIP contenant `templates/` et `static/`
-   - Enregistrez avec "Uploaded ZIP"
-   - Téléchargez le ZIP
-   - Accédez via `/uploaded/app-{id}/index.html`
-
 ## 🐛 Troubleshooting
 
-**Port 8080 déjà utilisé** :
+**Port 8080 déj�� utilisé** :
 ```bash
 mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=9090"
 ```
@@ -273,10 +243,6 @@ mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=9090"
 docker-compose up -d postgres
 ```
 
-**Droits d'accès aux uploads** :
-```bash
-chmod -R 755 uploads/
-```
 
 ## 📄 Licence
 
